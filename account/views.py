@@ -56,6 +56,7 @@ def profile_update(request):
     return render(request, 'account/profile_update.html', {'form': form})
 
 def password_reset_request(request):
+    reset_link=None
     if request.method == 'POST':
         form = PasswordResetRequestForm(request.POST)
         if form.is_valid():
@@ -65,33 +66,43 @@ def password_reset_request(request):
                 # Generate reset token
                 reset_token = str(uuid.uuid4())
                 # Send reset email
-                reset_link = f"http://yourdomain.com/password-reset-confirm/{reset_token}/"
-                send_mail(
-                    'Password Reset Request',
-                    f'Click the link to reset your password: {reset_link}',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [email],
-                    fail_silently=False,
-                )
+                reset_link = f"http://127.0.0.1:8000/password-reset-confirm/{reset_token}/"
+                user.token = reset_token
+                user.save()
+                # send_mail(
+                #     'Password Reset Request',
+                #     f'Click the link to reset your password: {reset_link}',
+                #     settings.DEFAULT_FROM_EMAIL,
+                #     [email],
+                #     fail_silently=False,
+                # )
                 messages.success(request, 'Password reset link sent to your email')
             except CustomUser.DoesNotExist:
                 messages.error(request, 'No user found with this email')
     else:
         form = PasswordResetRequestForm()
-    return render(request, 'account/password_reset_request.html', {'form': form})
+    return render(request, 'account/password_reset_request.html', {'form': form,'reset_link':reset_link})
 
 def password_reset_confirm(request, token):
-    if request.method == 'POST':
-        form = PasswordResetConfirmForm(request.POST)
-        if form.is_valid():
-            # Validate token and reset password
-            new_password = form.cleaned_data['new_password1']
-            # Implement token validation logic here
-            messages.success(request, 'Password reset successful')
-            return redirect('login')
-    else:
-        form = PasswordResetConfirmForm()
-    return render(request, 'account/password_reset_confirm.html', {'form': form})
+    user = CustomUser.objects.filter(id=request.user.id)
+    if user.exists():
+        user = user.first()
+        if request.method == 'POST' and user.token==token:
+            form = PasswordResetConfirmForm(request.POST)
+            if form.is_valid():
+                # Validate token and reset password
+                new_password = form.cleaned_data['new_password1']
+                user.set_password(new_password)
+                user.save()
+                # Implement token validation logic here
+                messages.success(request, 'Password reset successful')
+                return redirect('login')
+        else:
+            form = PasswordResetConfirmForm()
+        return render(request, 'account/password_reset_confirm.html', {'form': form})
+
+    messages.error(request, 'No user found with this email or invalid token')
+
 
 def logout_view(request):
     logout(request)
