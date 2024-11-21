@@ -14,6 +14,8 @@ from .forms import (
 )
 from .models import CustomUser
 
+
+
 def register_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -25,6 +27,7 @@ def register_view(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'account/register.html', {'form': form})
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -39,9 +42,11 @@ def login_view(request):
             messages.error(request, 'Invalid login credentials')
     return render(request, 'account/login.html')
 
+
 @login_required
 def user_panel(request):
     return render(request, 'account/user_panel.html')
+
 
 @login_required
 def profile_update(request):
@@ -55,6 +60,7 @@ def profile_update(request):
         form = UserProfileUpdateForm(instance=request.user)
     return render(request, 'account/profile_update.html', {'form': form})
 
+
 def password_reset_request(request):
     reset_link=None
     if request.method == 'POST':
@@ -63,9 +69,7 @@ def password_reset_request(request):
             email = form.cleaned_data['email']
             try:
                 user = CustomUser.objects.get(email=email)
-                # Generate reset token
                 reset_token = str(uuid.uuid4())
-                # Send reset email
                 reset_link = f"http://127.0.0.1:8000/password-reset-confirm/{reset_token}/"
                 user.token = reset_token
                 user.save()
@@ -83,6 +87,7 @@ def password_reset_request(request):
         form = PasswordResetRequestForm()
     return render(request, 'account/password_reset_request.html', {'form': form,'reset_link':reset_link})
 
+
 def password_reset_confirm(request, token):
     user = CustomUser.objects.filter(id=request.user.id)
     if user.exists():
@@ -90,11 +95,9 @@ def password_reset_confirm(request, token):
         if request.method == 'POST' and user.token==token:
             form = PasswordResetConfirmForm(request.POST)
             if form.is_valid():
-                # Validate token and reset password
                 new_password = form.cleaned_data['new_password1']
                 user.set_password(new_password)
                 user.save()
-                # Implement token validation logic here
                 messages.success(request, 'Password reset successful')
                 return redirect('login')
         else:
