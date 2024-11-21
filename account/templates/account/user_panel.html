@@ -1,0 +1,64 @@
+{% extends "shared/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    {% if user.profile_picture %}
+                        <img src="{{ user.profile_picture.url }}" class="rounded-circle mb-3" width="150" height="150">
+                    {% else %}
+                        <img src="{% static 'default_profile.png' %}" class="rounded-circle mb-3" width="150" height="150">
+                    {% endif %}
+                    <h4>{{ user.full_name }}</h4>
+                    <p class="text-muted">{{ user.email }}</p>
+                </div>
+            </div>
+            <div class="list-group mt-3">
+                <a href="{% url 'profile_update' %}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-user"></i> Edit Profile
+                </a>
+                <a href="{% url 'password_change' %}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-lock"></i> Change Password
+                </a>
+                <a href="{% url 'logout' %}" class="list-group-item list-group-item-action text-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Dashboard</h3>
+                </div>
+                <div class="card-body">
+                    <h4>Welcome, {{ user.full_name }}!</h4>
+                    <p>This is your personal dashboard where you can manage your account and view your information.</p>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white mb-3">
+                                <div class="card-body">
+                                    <h5>Account Details</h5>
+                                    <p>Email: {{ user.email }}</p>
+                                    <p>Username: {{ user.username }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white mb-3">
+                                <div class="card-body">
+                                    <h5>Membership</h5>
+                                    <p>Joined: {{ user.date_joined|date:"F d, Y" }}</p>
+                                    <p>Status: Active</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
