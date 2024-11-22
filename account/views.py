@@ -73,13 +73,16 @@ def password_reset_request(request):
                 reset_link = f"http://127.0.0.1:8000/password-reset-confirm/{reset_token}/"
                 user.token = reset_token
                 user.save()
-                # send_mail(
-                #     'Password Reset Request',
-                #     f'Click the link to reset your password: {reset_link}',
-                #     settings.DEFAULT_FROM_EMAIL,
-                #     [email],
-                #     fail_silently=False,
-                # )
+                # if you dont have an email still you can access to reset_pass link on the reset_pass page
+                # just click on send email and then use reset_link button
+                # and comment send_mail section
+                send_mail(
+                    'Password Reset Request',
+                    f'Click the link to reset your password: {reset_link}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
                 messages.success(request, 'Password reset link sent to your email')
             except CustomUser.DoesNotExist:
                 messages.error(request, 'No user found with this email')
