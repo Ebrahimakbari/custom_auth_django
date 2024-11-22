@@ -142,6 +142,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'account.CustomUser'
 
+LOGIN_URL="login"
+LOGIN_REDIRECT_URL = "user_panel"
+LOGOUT_REDIRECT_URL = "login"
+
 # Email Configuration (for password reset)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

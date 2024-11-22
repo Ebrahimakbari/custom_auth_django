@@ -63,3 +63,10 @@ class PasswordResetConfirmForm(forms.Form):
         if password1 != password2:
             raise forms.ValidationError("Passwords do not match")
         return password2
+
+
+class AccountDeleteForm(forms.Form):
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(),
+        help_text="Enter your current password to confirm account deletion"
+    )

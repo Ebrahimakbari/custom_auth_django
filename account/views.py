@@ -10,7 +10,8 @@ from .forms import (
     CustomUserCreationForm, 
     UserProfileUpdateForm, 
     PasswordResetRequestForm,
-    PasswordResetConfirmForm
+    PasswordResetConfirmForm,
+    AccountDeleteForm
 )
 from .models import CustomUser
 
@@ -114,3 +115,19 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Logged out successfully!')
     return redirect('login')
+
+@login_required
+def account_delete_view(request):
+    if request.method == 'POST':
+        form = AccountDeleteForm(request.POST)
+        if form.is_valid():
+            # Verify current password
+            if request.user.check_password(form.cleaned_data['confirm_password']):
+                request.user.delete()
+                messages.success(request, 'Your account has been permanently deleted.')
+                return redirect('register')
+            else:
+                messages.error(request, 'Incorrect password')
+    else:
+        form = AccountDeleteForm()
+    return render(request, 'account/account_delete.html', {'form': form})
