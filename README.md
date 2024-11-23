@@ -9,7 +9,7 @@ To install this project, simply clone the repository and set the API key. You ca
 ## Features
 
 - User registration with email and username
-- User login and logout
+- User login and logout and delete account
 - User profile update
 - Password reset
 - Customizable password validation

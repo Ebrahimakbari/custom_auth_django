@@ -29,8 +29,8 @@ class ComplexPasswordValidator:
 
 def validate_username(value):
     # Username validation
-    if len(value) < 2:
-        raise ValidationError(_('Username must be at least 2 characters long'))
+    if len(value) < 1:
+        raise ValidationError(_('Username must be at least 1 characters long'))
     
     if not re.match(r'^[a-zA-Z0-9_]+$', value):
         raise ValidationError(_('Username can only contain letters, numbers, and underscores'))

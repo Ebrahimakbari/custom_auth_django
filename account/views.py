@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.views.decorators.http import require_http_methods,require_GET
 import uuid
 
 from .forms import (
@@ -16,7 +17,7 @@ from .forms import (
 from .models import CustomUser
 
 
-
+@require_http_methods(request_method_list=['GET','POST'])
 def register_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -30,6 +31,7 @@ def register_view(request):
     return render(request, 'account/register.html', {'form': form})
 
 
+@require_http_methods(request_method_list=['GET','POST'])
 def login_view(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -45,11 +47,13 @@ def login_view(request):
 
 
 @login_required
+@require_GET
 def user_panel(request):
     return render(request, 'account/user_panel.html')
 
 
 @login_required
+@require_http_methods(request_method_list=['GET','POST'])
 def profile_update(request):
     if request.method == 'POST':
         form = UserProfileUpdateForm(request.POST, request.FILES, instance=request.user)
@@ -61,7 +65,8 @@ def profile_update(request):
         form = UserProfileUpdateForm(instance=request.user)
     return render(request, 'account/profile_update.html', {'form': form})
 
-
+@login_required
+@require_http_methods(request_method_list=['GET','POST'])
 def password_reset_request(request):
     reset_link=None
     if request.method == 'POST':
@@ -92,6 +97,7 @@ def password_reset_request(request):
     return render(request, 'account/password_reset_request.html', {'form': form,'reset_link':reset_link})
 
 
+@require_http_methods(request_method_list=['GET','POST'])
 def password_reset_confirm(request, token):
     user = CustomUser.objects.filter(id=request.user.id)
     if user.exists():
@@ -110,13 +116,15 @@ def password_reset_confirm(request, token):
 
     messages.error(request, 'No user found with this email or invalid token')
 
-
+@require_GET
 def logout_view(request):
     logout(request)
     messages.success(request, 'Logged out successfully!')
     return redirect('login')
 
+
 @login_required
+@require_http_methods(request_method_list=['GET','POST'])
 def account_delete_view(request):
     if request.method == 'POST':
         form = AccountDeleteForm(request.POST)
