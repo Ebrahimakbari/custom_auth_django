@@ -4,7 +4,7 @@ This project is a Django authentication system with fully customizable options. 
 
 ## Installation
 
-To install this project, simply clone the repository and set the API key. You can then use the project as is or customize it to fit your needs.
+To install this project, simply clone the repository and set the API key and db configs. You can then use the project as is or customize it to fit your needs.
 
 ## Features
 
@@ -20,6 +20,7 @@ To install this project, simply clone the repository and set the API key. You ca
 - Django 4.2
 - Pillow 11.0.0
 - python-decouple 3.8
+- psycopg2 2.9.10
 
 ## Configuration
 
