@@ -19,7 +19,6 @@ from .models import CustomUser
 
 @require_http_methods(request_method_list=['GET','POST'])
 def register_view(request):
-    print(request.get_host())
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
