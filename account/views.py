@@ -19,6 +19,7 @@ from .models import CustomUser
 
 @require_http_methods(request_method_list=['GET','POST'])
 def register_view(request):
+    print(request.get_host())
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
@@ -76,7 +77,7 @@ def password_reset_request(request):
             try:
                 user = CustomUser.objects.get(email=email)
                 reset_token = str(uuid.uuid4())
-                reset_link = f"http://127.0.0.1:8000/password-reset-confirm/{reset_token}/"
+                reset_link = f"http://{request.get_host()}/password-reset-confirm/{reset_token}/"
                 user.token = reset_token
                 user.save()
                 # if you dont have an email still you can access to reset_pass link on the reset_pass page
