@@ -22,7 +22,7 @@ To install this project, simply clone the repository and set the API key and db 
 - Django 4.2
 - Pillow 11.0.0
 - python-decouple 3.8
-- psycopg2 2.9.10
+- psycopg2-binary 2.9.10
 
 ## Configuration
 
@@ -53,6 +53,15 @@ urlpatterns = [
     ...
 ]
 ```
+## Docker:
+1. 
+   ```
+   docker compose up --build
+   ```
+2. 
+   ```
+   docker compose run python manage.py migrate
+   ```
 
 ## Contributing
 
